@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-    php-apache-environment:
-        container_name: php-apache
+    activetask:
+        container_name: activetask
         build:
             context: ./php
             dockerfile: Dockerfile
@@ -12,15 +12,17 @@ services:
             - ./apache/demo.apache.conf:/etc/apache2/sites-enabled/demo.conf
         ports:
             - 8000:80
+        env_file:
+            - .env
     db:
         container_name: db
         image: mysql
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
-            MYSQL_DATABASE: MYSQL_DATABASE
-            MYSQL_USER: MYSQL_USER
-            MYSQL_PASSWORD: MYSQL_PASSWORD
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         ports:
             - "9906:3306"
     phpmyadmin:

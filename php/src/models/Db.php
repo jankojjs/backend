@@ -6,14 +6,11 @@
  * @license     MIT public license
  */
 
-namespace Db;
-
 class Db
 {
     public function __construct()
     {
         $root_password = $_ENV['MYSQL_ROOT_PASSWORD'];
-
         $connectionParams = array(
             'dbname' => 'activetask',
             'user' => 'root',
@@ -21,7 +18,7 @@ class Db
             'host' => 'localhost',
             'driver' => 'mysqli',
         );
-
         $this->conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams);
+        return $this->conn;
     }
 }

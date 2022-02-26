@@ -2,13 +2,7 @@
 
 // Require composer autoloader
 require __DIR__ . '/vendor/autoload.php';
-
-use DI\ContainerBuilder;
-
-$containerBuilder = new ContainerBuilder();
-$containerBuilder->addDefinitions(__DIR__ . '/config/config.php');
-
-$container = $containerBuilder->build();
+require __DIR__ . '/autoload.php';
 
 function json($status, $data)
 {
@@ -19,7 +13,6 @@ function json($status, $data)
     echo json_encode($data);
 }
 
-$conn = $container->get('Db');
-$router = $container->get('InnerRouter');
-$router->addBaseRoutes();
+$router = new \Bramus\Router\Router();
+$user_controller = new UserController($router);
 $router->run();

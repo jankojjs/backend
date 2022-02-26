@@ -6,8 +6,6 @@
  * @license     MIT public license
  */
 
-namespace User;
-
 class User
 {
     public $id;

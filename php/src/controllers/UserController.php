@@ -6,40 +6,36 @@
  * @license     MIT public license
  */
 
-namespace InnerRouter;
-
-use Bramus\Router\Router;
-
-class InnerRouter
+class UserController
 {
-    public function __construct()
+    public $router;
+    public $login_route;
+
+    public function __construct($router)
     {
-        $this->router = new Router();
+        $this->router = $router;
+        $this->login_route = '/login';
+        $this->setLoginRoute();
+        $this->setAboutRoute();
     }
 
-    public function addBaseRoutes()
+    public function setAboutRoute()
     {
         $this->router->get('/about', function () {
             echo 'About Page Contents';
         });
+    }
 
-        $this->router->get('/hello/(\w+)', function ($name) {
-            // echo 'Hello ' . htmlentities($name);
-
-            json(200, [
-                "status" => 200,
-                "message" => "action completed successfully",
-                "id" => 44236,
-                "user" => $name,
-            ]);
-        });
-
-        $this->router->post('/login', function () {
-
+    public function setLoginRoute()
+    {
+        $this->router->post($this->login_route, function () {
             $json = file_get_contents('php://input');
             $someObject = json_decode($json);
             $username = $someObject->username;
             $password = $someObject->password;
+
+            // saljemo u odgovarajucu model metodu
+            // eventualno vraca odgovor
 
             $log = false;
             if ($username === "janko") {
@@ -75,10 +71,5 @@ class InnerRouter
                 ]);
             }
         });
-    }
-
-    public function run()
-    {
-        $this->router->run();
     }
 }

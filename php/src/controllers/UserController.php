@@ -58,10 +58,9 @@ class UserController
             // echo $log;
             if ($log) {
                 json(200, [
-                    "status" => 200,
-                    "message" => "action completed successfully",
-                    "id" => 44236,
-                    "user" => $user,
+                    "entities" => [
+                        "user" => $user,
+                    ]
                 ]);
             } else {
                 json(200, [

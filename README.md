@@ -6,3 +6,6 @@
 docker-compose up --build -> run if something is changed in Dockerfile
 
 docker-compose exec activetask php tasks/task.php -> run scripts
+
+To run composer try:
+docker-compose run composer require package/name

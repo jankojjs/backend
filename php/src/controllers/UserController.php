@@ -8,67 +8,64 @@
 
 class UserController
 {
-    public $router;
-    public $login_route;
+  public $router;
+  public $user;
+  public $login_route;
+  public $register_route;
 
-    public function __construct($router)
-    {
-        $this->router = $router;
-        $this->login_route = '/login';
-        $this->setLoginRoute();
-        $this->setAboutRoute();
-    }
+  public function __construct($router, $user)
+  {
+    $this->router = $router;
+    $this->user = $user;
+    $this->login_route = '/login';
+    $this->register_route = '/register';
+    $this->setLoginRoute();
+    $this->setAboutRoute();
+    $this->setRegisterRouter();
+  }
 
-    public function setAboutRoute()
-    {
-        $this->router->get('/about', function () {
-            echo 'About Page Contents';
-        });
-    }
+  public function setAboutRoute()
+  {
+    $this->router->get('/about', function () {
+      echo 'About Page Contents';
+    });
+  }
 
-    public function setLoginRoute()
-    {
-        $this->router->post($this->login_route, function () {
-            $json = file_get_contents('php://input');
-            $someObject = json_decode($json);
-            $username = $someObject->username;
-            $password = $someObject->password;
+  public function setLoginRoute()
+  {
+    $this->router->post($this->login_route, function () {
+      $payload_json = file_get_contents('php://input');
+      $payload_object = json_decode($payload_json);
+      $username = $payload_object->username;
+      $password = $payload_object->password;
 
-            // saljemo u odgovarajucu model metodu
-            // eventualno vraca odgovor
+      $response = $this->user->login($username, $password);
+      if ($response) {
+        if ($response['status_code'] === 200) {
+          json($response['status_code'], [
+            "entities" => [
+              "user" => $response['message'],
+            ]
+          ]);
+        } else {
+          json($response['status_code'], [
+            "error" => $response['message'],
+          ]);
+        }
+      }
+    });
+  }
 
-            $log = false;
-            if ($username === "janko") {
-                $log = true;
-            }
-            if ($password === "jelena420") {
-                $log = true;
-            } else {
-                $log = false;
-            }
-            if ($log) {
-                $user = [
-                    "username" => "janko",
-                    "id" => 5,
-                    "email" => "janko@activecollab.com",
-                    "avatar" => null,
-                    "instance" => 11356,
-                ];
-            };
-            // echo $log;
-            if ($log) {
-                json(200, [
-                    "entities" => [
-                        "user" => $user,
-                    ]
-                ]);
-            } else {
-                json(200, [
-                    "status" => 200,
-                    "message" => "Bad credentials",
-                    "user" => null,
-                ]);
-            }
-        });
-    }
+  public function setRegisterRouter()
+  {
+    $this->router->post($this->register_route, function () {
+      $payload_json = file_get_contents('php://input');
+      $payload_object = json_decode($payload_json);
+      $this->user->register($payload_object);
+      // $response = $this->user->register($payload_object);
+      // json($response['status_code'], [
+      //   "message" => $response['message'],
+      // ]);
+    });
+  }
 }

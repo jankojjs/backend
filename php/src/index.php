@@ -13,6 +13,8 @@ function json($status, $data)
     echo json_encode($data);
 }
 
+$db = new Db($_ENV['MYSQL_HOST'], $_ENV['MYSQL_ROOT'], $_ENV['MYSQL_ROOT_PASSWORD'], $_ENV['MYSQL_DATABASE']);
+$user = new User($db);
 $router = new \Bramus\Router\Router();
-$user_controller = new UserController($router);
+$user_controller = new UserController($router, $user);
 $router->run();

@@ -17,71 +17,116 @@ class User
     public $gender;
     public $locale;
     public $picture;
-    public $created_at;
-    public $last_modified_at;
+    public $created;
+    public $modified;
     public $queryBuilder;
-    public $conn;
+    public $db;
 
-    public function populate(
-        $id,
-        $username,
-        $password,
-        $email,
-        $first_name,
-        $last_name,
-        $gender,
-        $locale,
-        $picture,
-        $created_at,
-        $last_modified_at
-    ) {
-        $this->id = $id;
-        $this->username = $username;
-        $this->password = $password;
-        $this->email = $email;
-        $this->first_name = $first_name;
-        $this->last_name = $last_name;
-        $this->gender = $gender;
-        $this->locale = $locale;
-        $this->picture = $picture;
-        $this->created_at = $created_at;
-        $this->last_modified_at = $last_modified_at;
+    public function __construct($db)
+    {
+        $this->db = $db;
     }
 
-    public function register(
-        $username,
-        $password,
-        $email,
-        $first_name,
-        $last_name,
-        $gender,
-        $locale,
-        $picture,
-    ) {
-        $date_now = date('Y-m-d H:i:s');
-        $this->queryBuilder
-            ->insert('users')
-            ->setValue('id', '?')
-            ->setValue('username', '?')
-            ->setValue('password', '?')
-            ->setValue('email', '?')
-            ->setValue('first_name', '?')
-            ->setValue('last_name', '?')
-            ->setValue('gender', '?')
-            ->setValue('locale', '?')
-            ->setValue('picture', '?')
-            ->setValue('created_at', '?')
-            ->setValue('last_modified_at', '?')
-            ->setParameter(0, null)
-            ->setParameter(1, $username)
-            ->setParameter(2, $password)
-            ->setParameter(3, $email)
-            ->setParameter(4, $first_name)
-            ->setParameter(5, $last_name)
-            ->setParameter(6, $gender)
-            ->setParameter(7, $locale)
-            ->setParameter(5, $picture)
-            ->setParameter(6, $date_now)
-            ->setParameter(7, $date_now);
+    // public function up()
+    // {
+    //     // Create table
+    // }
+
+    public function populate($userArray)
+    {
+        $this->id = $userArray['id'];
+        $this->username = $userArray['username'];
+        $this->password = $userArray['password'];
+        $this->email = $userArray['email'];
+        $this->first_name = $userArray['first_name'];
+        $this->last_name = $userArray['last_name'];
+        $this->gender = $userArray['gender'];
+        $this->locale = $userArray['locale'];
+        $this->picture = $userArray['picture'];
+        $this->created = $userArray['created'];
+        $this->modified = $userArray['modified'];
+    }
+
+    public function fetchUserData($show_password)
+    {
+        $userObj['id'] = $this->id;
+        $userObj['username'] = $this->username;
+        if ($show_password) {
+            $userObj['password'] = $this->password;
+        }
+        $userObj['email'] = $this->email;
+        $userObj['first_name'] = $this->first_name;
+        $userObj['last_name'] = $this->last_name;
+        $userObj['gender'] = $this->gender;
+        $userObj['locale'] = $this->locale;
+        $userObj['picture'] = $this->picture;
+        $userObj['created'] = $this->created;
+        $userObj['modified'] = $this->modified;
+        return $userObj;
+    }
+
+    public function login($username, $password)
+    {
+        $requested_user = $this->db->query('SELECT * FROM users WHERE username = ?', $username)->fetchArray();
+        if ($requested_user) {
+            if (password_verify($password, $requested_user['password'])) {
+                $this->populate($requested_user);
+                $message = $this->fetchUserData(false);
+                $status_code = 200;
+            } else {
+                $message = 'Wrong password.';
+                $status_code = 403;
+            }
+        } else {
+            $message = 'Wrong username.';
+            $status_code = 404;
+        }
+        return $response = [
+            'status_code' => $status_code,
+            'message' => $message
+        ];
+    }
+
+    public function register($user_data)
+    {
+        if ($user_data->username) {
+            $username_in_use = $this->db->query('SELECT * FROM users WHERE username = ?', $user_data->username);
+            if ($username_in_use->numRows() === 1) {
+                $message = 'Username in use.';
+                $status_code = 403;
+                return $response = [
+                    'status_code' => $status_code,
+                    'message' => $message
+                ];
+            } else {
+                var_dump($user_data);
+                // $insert = $this->db->query('INSERT INTO users (username,password,email,name) VALUES (?,?,?,?)', 'test', 'test', 'test@gmail.com', 'Test');
+                // echo $insert->affectedRows();
+            }
+        }
+        $message = 'Bad request.';
+        // @ToDo: Change code
+        $status_code = 403;
+        return $response = [
+            'status_code' => $status_code,
+            'message' => $message
+        ];
+        // if ($requested_user) {
+        //     if (password_verify($password, $requested_user['password'])) {
+        //         $this->populate($requested_user);
+        //         $message = $this->fetchUserData(false);
+        //         $status_code = 200;
+        //     } else {
+        //         $message = 'Wrong password.';
+        //         $status_code = 403;
+        //     }
+        // } else {
+        //     $message = 'Wrong username.';
+        //     $status_code = 404;
+        // }
+        // return $response = [
+        //     'status_code' => $status_code,
+        //     'message' => $message
+        // ];
     }
 }

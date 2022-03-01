@@ -4,6 +4,7 @@
         "bramus/router": "~1.6",
         "doctrine/dbal": "~3.3.2",
         "php-di/php-di": "7.0.0-beta3",
-        "doctrine/annotations": "~1.13.2"
+        "doctrine/annotations": "~1.13.2",
+        "pusher/pusher-php-server": "^7.0"
     }
 }

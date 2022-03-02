@@ -6,7 +6,7 @@
  * @license     MIT public license
  */
 
-namespace JJS\Controllers;
+namespace JJS\User;
 
 class UserController
 {

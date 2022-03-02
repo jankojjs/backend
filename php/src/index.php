@@ -12,8 +12,8 @@ function json($status, $data)
     echo json_encode($data);
 }
 
-$db = new \JJS\Models\Db($_ENV['MYSQL_HOST'], $_ENV['MYSQL_ROOT'], $_ENV['MYSQL_ROOT_PASSWORD'], $_ENV['MYSQL_DATABASE']);
-$user = new \JJS\Models\User($db);
+$db = new \JJS\Db\Db($_ENV['MYSQL_HOST'], $_ENV['MYSQL_ROOT'], $_ENV['MYSQL_ROOT_PASSWORD'], $_ENV['MYSQL_DATABASE']);
+$user = new \JJS\User\User($db);
 $router = new \Bramus\Router\Router();
-$user_controller = new \JJS\Controllers\UserController($router, $user);
+$user_controller = new \JJS\User\UserController($router, $user);
 $router->run();

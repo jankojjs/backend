@@ -6,7 +6,7 @@
  * @license     MIT public license
  */
 
-namespace JJS\Models;
+namespace JJS\User;
 
 class User
 {

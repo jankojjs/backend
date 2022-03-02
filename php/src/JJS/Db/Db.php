@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace JJS\Models;
+namespace JJS\Db;
 
 use mysqli;
 

@@ -6,6 +6,8 @@
  * @license     MIT public license
  */
 
+namespace JJS\Models;
+
 class User
 {
     public $id;

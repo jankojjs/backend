@@ -6,6 +6,8 @@
  * @license     MIT public license
  */
 
+namespace JJS\Controllers;
+
 class UserController
 {
   public $router;

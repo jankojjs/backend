@@ -6,9 +6,15 @@
  * @license     MIT public license
  */
 
+declare(strict_types=1);
+
+namespace JJS\Models;
+
+use mysqli;
+
 class Db
 {
-    protected $connection;
+    protected mysqli $connection;
     protected $query;
     protected $show_errors = TRUE;
     protected $query_closed = TRUE;

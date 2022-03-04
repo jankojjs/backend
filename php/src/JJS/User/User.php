@@ -45,6 +45,7 @@ class User
             modified datetime NOT NULL,
             PRIMARY KEY (id)
         )";
+        $this->db->query($sql_create);
 
         $hashed_pwd = '$2y$10$wMg0r4z3EuTBy8KvHuYYPeK8cbhQJ4kCbaEtF9iQMeLRz8JMUJJSS';
 
@@ -54,7 +55,6 @@ class User
         $sql_fill_data = "INSERT INTO users (id, username, password, first_name, last_name, email, `gender`, locale, picture, created, modified) VALUES
         (6, 'janko', '$hashed_pwd', 'janko@jankovic.rs', 'janko', 'stanic', NULL, NULL, NULL, '2022-03-04 10:52:09', '2022-03-04 10:52:09')";
 
-        $this->db->query($sql_create);
         if ($users_num_rows) {
             $this->db->query($sql_fill_data);
         } else {

@@ -63,11 +63,16 @@ class UserController
     $this->router->post($this->register_route, function () {
       $payload_json = file_get_contents('php://input');
       $payload_object = json_decode($payload_json);
-      $this->user->register($payload_object);
-      // $response = $this->user->register($payload_object);
-      // json($response['status_code'], [
-      //   "message" => $response['message'],
-      // ]);
+      $response = $this->user->register($payload_object);
+      if ($response['status_code'] === 200) {
+        json($response['status_code'], [
+          "message" => $response['message'],
+        ]);
+      } else {
+        json($response['status_code'], [
+          "error" => $response['error'],
+        ]);
+      }
     });
   }
 }

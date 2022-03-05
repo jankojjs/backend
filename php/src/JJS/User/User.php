@@ -8,7 +8,9 @@
 
 namespace JJS\User;
 
-class User
+use JJS\Db\Db;
+
+class User extends Db
 {
     public $id;
     public $username;
@@ -21,13 +23,6 @@ class User
     public $picture;
     public $created;
     public $modified;
-    public $queryBuilder;
-    public $db;
-
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
 
     public function initTable()
     {
@@ -45,18 +40,18 @@ class User
             modified datetime NOT NULL,
             PRIMARY KEY (id)
         )";
-        $this->db->query($sql_create);
+        $this->query($sql_create);
 
         $hashed_pwd = '$2y$10$wMg0r4z3EuTBy8KvHuYYPeK8cbhQJ4kCbaEtF9iQMeLRz8JMUJJSS';
 
         $sql_is_table_empty = "SELECT * FROM users";
-        $users_num_rows = $this->db->query($sql_is_table_empty)->numRows() === 0;
+        $users_num_rows = $this->query($sql_is_table_empty)->numRows() === 0;
 
         $sql_fill_data = "INSERT INTO users (id, username, password, first_name, last_name, email, `gender`, locale, picture, created, modified) VALUES
         (6, 'janko', '$hashed_pwd', 'janko@jankovic.rs', 'janko', 'stanic', NULL, NULL, NULL, '2022-03-04 10:52:09', '2022-03-04 10:52:09')";
 
         if ($users_num_rows) {
-            $this->db->query($sql_fill_data);
+            $this->query($sql_fill_data);
         } else {
             echo "Users table exists and has data in it.";
         }
@@ -97,7 +92,7 @@ class User
 
     public function login($username, $password)
     {
-        $requested_user = $this->db->query('SELECT * FROM users WHERE username = ?', $username)->fetchArray();
+        $requested_user = $this->query('SELECT * FROM users WHERE username = ?', $username)->fetchArray();
         if ($requested_user) {
             if (password_verify($password, $requested_user['password'])) {
                 $this->populate($requested_user);
@@ -119,7 +114,7 @@ class User
 
     public function isUsernameInUse($provided_username)
     {
-        $query = $this->db->query('SELECT * FROM users WHERE username = ?', $provided_username);
+        $query = $this->query('SELECT * FROM users WHERE username = ?', $provided_username);
         return $query->numRows() === 1;
     }
 
@@ -136,7 +131,7 @@ class User
             } else {
                 $hashed_password = password_hash($user_data->password, PASSWORD_DEFAULT);
                 $date_now = date('Y-m-d H:i:s');
-                $insert = $this->db->query(
+                $insert = $this->query(
                     'INSERT INTO users
                      (id, username, password, first_name, last_name, email, gender, locale, picture, created, modified)
                      VALUES (null,?,?,?,?,?,null,null,null,?,?)',

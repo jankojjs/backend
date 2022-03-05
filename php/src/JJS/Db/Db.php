@@ -20,9 +20,9 @@ class Db
     protected $query_closed = TRUE;
     public $query_count = 0;
 
-    public function __construct($dbhost, $dbuser, $dbpass, $dbname, $charset = 'utf8')
+    public function __construct($charset = 'utf8')
     {
-        $this->connection = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        $this->connection = new mysqli($_ENV['MYSQL_HOST'], $_ENV['MYSQL_ROOT'], $_ENV['MYSQL_ROOT_PASSWORD'], $_ENV['MYSQL_DATABASE']);
         if ($this->connection->connect_error) {
             $this->error('Failed to connect to MySQL - ' . $this->connection->connect_error);
         }

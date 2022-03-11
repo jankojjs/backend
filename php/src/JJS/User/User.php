@@ -24,7 +24,7 @@ class User extends Db
     public $created;
     public $modified;
 
-    public function initTable()
+    public function seeder()
     {
         $sql_create = "CREATE TABLE IF NOT EXISTS users (
             id int NOT NULL,

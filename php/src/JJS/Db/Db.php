@@ -20,13 +20,13 @@ class Db
     protected $query_closed = TRUE;
     public $query_count = 0;
 
-    public function __construct($charset = 'utf8')
+    public function conn($charset = 'utf8')
     {
         $this->connection = new mysqli($_ENV['MYSQL_HOST'], $_ENV['MYSQL_ROOT'], $_ENV['MYSQL_ROOT_PASSWORD'], $_ENV['MYSQL_DATABASE']);
         if ($this->connection->connect_error) {
-            $this->error('Failed to connect to MySQL - ' . $this->connection->connect_error);
+            return $this->error('Failed to connect to MySQL - ' . $this->connection->connect_error);
         }
-        $this->connection->set_charset($charset);
+        return $this->connection->set_charset($charset);
     }
 
     public function query($query)
@@ -34,6 +34,7 @@ class Db
         if (!$this->query_closed) {
             $this->query->close();
         }
+        $this->conn();
         if ($this->query = $this->connection->prepare($query)) {
             if (func_num_args() > 1) {
                 $x = func_get_args();
